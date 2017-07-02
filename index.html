@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"/>
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.theme-1.4.5.min.css" />
+    <title>BM App</title>
+</head>
+
+<body>
+    <div class="app">
+        <div data-role="page" id="home">
+            <header data-role="header">
+                <img class="banner" src="img/banner_inicio.jpg">
+            </header>
+
+            <div data-role="content">
+                <nav data-role="navbar">
+                    <ul>
+                        <li><a href="#home" class="ui-btn-active">Inicio</a></li>
+                        <li><a href="#promos">Promociones</a></li>
+                        <li><a href="#pos">Vis&iacute;tenos</a></li>
+                    </ul>
+                </nav>
+                <br>
+                <h3>¡Bienvenido a nuestra App!</h3>
+                <p>
+                    Aquí podrá encontrar información exclusiva, promociones, información de eventos y más...
+                </p>
+                <a href="#pos" class="ui-shadow ui-btn ui-corner-all">¿D&oacute;nde nos puede encontrar?</a>
+            </div>
+        </div>
+
+        <div data-role="page" id="promos">
+            <header data-role="header">
+                <img class="banner" src="img/banner_promos.jpg">
+            </header>
+
+            <div data-role="content">
+                <nav data-role="navbar">
+                    <ul>
+                        <li><a href="#home">Inicio</a></li>
+                        <li><a href="#promos" class="ui-btn-active">Promociones</a></li>
+                        <li><a href="#pos">Vis&iacute;tenos</a></li>
+                    </ul>
+                </nav>
+                <br><br>
+                <p>
+                    Aquí encontrará todas nuestras promociones, incluyendo promociones exclusivas para nuestros usuarios de la app...
+                </p>
+                <br><br>
+                <div id="cupones"></div>
+                <img src="img/cupones/cupon_1.gif" class="fscreen" width="100%">
+                <br><br>
+                <img src="img/cupones/cupon_2.gif" class="fscreen" width="100%">
+            </div>
+        </div>
+
+        <div data-role="page" id="pos">
+            <header data-role="header">
+                <img class="banner" src="img/banner_pos.jpg">
+            </header>
+
+            <div data-role="content">
+                <nav data-role="navbar">
+                    <ul>
+                        <li><a href="#home">Inicio</a></li>
+                        <li><a href="#promos">Promociones</a></li>
+                        <li><a href="#pos" class="ui-btn-active">Vis&iacute;tenos</a></li>
+                    </ul>
+                </nav>
+                <br><br>
+                <p>
+                    ¡Aqu&iacute; puede ver los diferentes locales en donde queremos servirle!
+                </p>
+                <div class="map">
+                    <iframe id="iFrGMap" name="iFrGMap" src="https://www.google.com/maps/d/embed?mid=1p9wAELjNgevHItznAKVP3Kwl69w&ll=9.876863789864302%2C-84.3310546875&z=8" width="360" height="380"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript">
+        function get_availableWidth(obj_param) {
+            var widthAvailable = -1;
+
+            if (typeof(obj_param) == "object") {
+                try {
+                    widthAvailable =  obj_param.parent().width();
+                } catch (e1) {
+                    console.log("Error 1 on " + arguments.callee.name + " = " + e1.description);
+                }
+
+                if (widthAvailable <= 0) {
+                    try {
+                        widthAvailable = obj_param.width();
+                    } catch (e2) {
+                        console.log("Error 2 on " + arguments.callee.name + " = " + e2.description);
+                    }
+                }
+
+                if (widthAvailable <= 0) {
+                    try {
+                        widthAvailable = obj_param.contents().find("body").width();
+                    } catch (e3) {
+                        console.log("Error 3 on " + arguments.callee.name + " = " + e3.description);
+                    }
+                }
+                if (widthAvailable <= 0) {
+                    try {
+                        widthAvailable = screen.width;
+                    } catch (e4) {
+                        console.log("Error 4 on " + arguments.callee.name + " = " + e4.description);
+                    }
+                } 
+            }
+
+            return widthAvailable;
+        }
+        function get_availableHeight(obj_param) {
+            var heightAvailable = -1;
+
+            if (typeof(obj_param) == "object") {
+                try {
+                    heightAvailable =  obj_param.parent().height();
+                } catch (e1) {
+                    console.log("Error 1 on " + arguments.callee.name + " = " + e1.description);
+                }
+
+                if (heightAvailable <= 0) {
+                    try {
+                        heightAvailable = obj_param.height();
+                    } catch (e2) {
+                        console.log("Error 2 on " + arguments.callee.name + " = " + e2.description);
+                    }
+                }
+
+                if (heightAvailable <= 0) {
+                    try {
+                        heightAvailable = obj_param.contents().find("body").height();
+                    } catch (e3) {
+                        console.log("Error 3 on " + arguments.callee.name + " = " + e3.description);
+                    }
+                }
+                if (heightAvailable <= 0) {
+                    try {
+                        heightAvailable = screen.height;
+                    } catch (e4) {
+                        console.log("Error 4 on " + arguments.callee.name + " = " + e4.description);
+                    }
+                } 
+            }
+
+            return heightAvailable;
+        }
+        $( document ).ready(function() {
+            $("#iFrGMap").load(function() {
+                $(this).width( (get_availableWidth($(".pos")) - 50) );
+                //$(this).height( (get_availableHeight($(".pos")) - 50) );
+            });
+        });
+    </script>
+</body>
+
+</html>
